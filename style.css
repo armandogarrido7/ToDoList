@@ -55,9 +55,13 @@ h2 {
 }
 
 
-/* .task:last-child {
+/* .task {
     animation: aparecer 0.75s ease-out;
 } */
+
+.animation {
+    animation: aparecer 0.75s ease-out;
+}
 
 @keyframes aparecer {
     0% {

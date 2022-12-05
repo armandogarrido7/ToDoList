@@ -68,8 +68,6 @@ class Controller {
     static showTask(task) {
         let task_div = $('<div class="task" id=' + task.id + '><div class="task_head"><img src="./img/not_checked.svg" class="do_btn"><h2>' + task.name + '</h2><img src="./img/delete.png" class="delete_task"></div><div class="priority">Prioridad:<div class="low">Low</div><div class="normal">Normal</div><div class="high">High</div><div class="time"><img src="./img/clock.svg">Añadido hace ' + Math.round((Date.now() - task.time) / 1000 / 60) + ' minutos</div></div></div>');
         $('#tasks').append(task_div);
-        // task_div.addClass("new_task");
-        // setTimeout((() => { task_div.removeClass("new_task") }), 750)
         if (task.done) {
             $('.do_btn').last().attr('src', './img/checked.svg');
             $("h2").last().css({ "text-decoration": "line-through", "color": "#00BC8C" })
@@ -113,6 +111,7 @@ class Controller {
             tasks[tasks_id].priority = 'low';
             localStorage['tasks'] = JSON.stringify(tasks);
             Controller.updateTasks();
+            Controller.animateTask($(this).attr('id'));
         })
         $('.normal').last()[0].id = task.id;
         $('.normal').last().click(function(e) {
@@ -126,6 +125,7 @@ class Controller {
             tasks.sort(Controller.orderTasks)
             localStorage['tasks'] = JSON.stringify(tasks);
             Controller.updateTasks();
+            Controller.animateTask($(this).attr('id'));
         })
         $('.high').last()[0].id = task.id;
         $('.high').last().click(function(e) {
@@ -136,9 +136,11 @@ class Controller {
                 }
             }
             tasks[tasks_id].priority = 'high';
-            tasks.sort(Controller.orderTasks)
+            tasks.sort(Controller.orderTasks);
+            console.log($(this).attr('id'));
             localStorage['tasks'] = JSON.stringify(tasks);
             Controller.updateTasks();
+            Controller.animateTask($(this).attr('id'));
         })
         if (task.priority == 'normal') {
             $('.priority').last().addClass('selected_normal');
@@ -157,6 +159,11 @@ class Controller {
                 this.showTask(task);
             }
         }
+
+    }
+    static animateTask(task_id) {
+        $("#" + task_id).addClass("animation");
+        setTimeout(() => { $("#" + task_id).removeClass('animation'); }, 1000);
     }
     static updateTasks() {
         $('#pending_tasks').text(Controller.getNotFinishedTasks());
@@ -175,6 +182,7 @@ window.onload = () => {
                 Controller.updateTasks();
                 $(this).val('');
             }
+            Controller.animateTask(Controller.getNewId() - 1);
         }
     });
     $("#clear_tasks").click(function() {
